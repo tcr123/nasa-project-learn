@@ -5,19 +5,6 @@ const axios = require('axios');
 const DEFAULT_FLIGHTNUMBER = 100;
 const LAUNCH_API_URL = 'https://api.spacexdata.com/v4/launches/query';
 
-const launch = {
-    flightNumber: 100,
-    mission: 'Kepler Exploration X',
-    rocket: 'Explorer IS1',
-    launchDate: new Date('December 27, 2030'),
-    target: 'Kepler-442 b',
-    customer: ['ZTM', 'NASA'],
-    upcoming: true,
-    success: true
-};
-
-saveLaunch(launch);
-
 async function populateLaunches() {
     console.log("Downloading the data from NASA...");
     const response = await axios.post(LAUNCH_API_URL, {
@@ -77,7 +64,7 @@ async function loadLaunchData() {
 
     const result = findLaunch(firstFilter);
 
-    if (!result) {
+    if (result) {
         console.log("Launch data already loaded!");
         return;
     } else {
@@ -85,11 +72,13 @@ async function loadLaunchData() {
     }
 }
 
-async function getAllLaunches() {
+async function getAllLaunches(skip, limit) {
     return await launchesDatabase.find({}, {
         '_id': 0,
         '__v': 0
-    });
+    }).sort({
+        flightNumber: 1
+    }).skip(skip).limit(limit);
 }
 
 async function getLatestFlightNumber() {
