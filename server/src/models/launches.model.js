@@ -62,7 +62,7 @@ async function loadLaunchData() {
         rocket: 'Falcon 1'
     }
 
-    const result = findLaunch(firstFilter);
+    const result = await findLaunch(firstFilter);console.log("Launch data already loaded!");
 
     if (result) {
         console.log("Launch data already loaded!");
