@@ -18,10 +18,12 @@ const launch = {
 
 saveLaunch(launch);
 
-async function loadLaunchData() {
+async function populateLaunches() {
+    console.log("Downloading the data from NASA...");
     const response = await axios.post(LAUNCH_API_URL, {
         query: {},
         options: {
+            pagination: false,
             populate: [
                 {
                     path: "rocket",
@@ -57,6 +59,23 @@ async function loadLaunchData() {
         }
         
         console.log(`${launch.flightNumber} ${launch.mission}`);
+    }
+}
+
+async function loadLaunchData() {
+    const firstFilter = {
+        flightNumber: 1,
+        mission: 'FalconSat',
+        rocket: 'Falcon 1'
+    }
+
+    const result = findLaunch(firstFilter);
+
+    if (!result) {
+        console.log("Launch data already loaded!");
+        return;
+    } else {
+        await populateLaunches();
     }
 }
 
@@ -104,8 +123,12 @@ async function scheduleNewLaunch(launch) {
     await saveLaunch(newLaunch);
 }
 
+async function findLaunch(filter) {
+    return await launchesDatabase.findOne(filter);
+}
+
 async function existLaunchById(id) {
-    return await launchesDatabase.findOne({
+    return findLaunch({
         flightNumber: id
     });
 }
