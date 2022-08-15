@@ -21,5 +21,4 @@ app.get("/*", (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'pub', 'index.html'));
 });
 
-// hello
 module.exports = app;
